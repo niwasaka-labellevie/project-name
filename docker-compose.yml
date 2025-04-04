@@ -1,0 +1,38 @@
+services:
+  app:
+    container_name: 'project-name'
+    build: . # Dockerfile path（同じところにあるので.だけでいいらしい）
+    ports:
+      - '3000:3000'
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: mysql
+      DB_NAME: sampledb
+  # 以下のログが出るから接続できているはず・・
+  # [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.41'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
+
+  # docker compose up で起動後、以下のコマンドでMySQL接続。
+  # mysql --host=127.0.0.1 --port=3306 -user=root --password=mysql
+  # show databases; などのコマンドでsampledbが表示されることを確認。
+  db:
+    container_name: 'testdb'
+    image: mysql:8.0 # 参考記事だと9.0使ってるが一旦使い慣れてる8.0で
+    ports:
+      - '3306:3306'
+    volumes:
+      - type: bind
+        source: ./db
+        target: /docker-entrypoint-initdb.d
+      - type: volume
+        source: db-volume
+        target: /var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: sampledb
+volumes:
+  db-volume:
