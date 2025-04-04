@@ -17,7 +17,7 @@ services:
   # [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.41'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
 
   # docker compose up で起動後、以下のコマンドでMySQL接続。
-  # mysql --host=127.0.0.1 --port=3306 -user=root --password=mysql
+  # mysql --host=127.0.0.1 --port=3306 --user=root --password=mysql
   # show databases; などのコマンドでsampledbが表示されることを確認。
   db:
     container_name: 'testdb'
@@ -27,7 +27,7 @@ services:
     volumes:
       - type: bind
         source: ./db
-        target: /docker-entrypoint-initdb.d
+        target: /docker-entrypoint-initdb.d # ここにあるスクリプトがコンテナ起動時に自動で実行される
       - type: volume
         source: db-volume
         target: /var/lib/mysql
