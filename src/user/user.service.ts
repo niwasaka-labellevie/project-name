@@ -16,8 +16,8 @@ const db = drizzle({ connection:{
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    return await db.insert(users).values(createUserDto);
   }
 
   async findAll() {
@@ -34,11 +34,14 @@ export class UserService {
     // return await db.select().from(users).where(sql`${users.id} = ${id}`);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return await db
+      .update(users)
+      .set(updateUserDto)
+      .where(eq(users.id, id));
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return await db.delete(users).where(eq(users.id, id));
   }
 }
